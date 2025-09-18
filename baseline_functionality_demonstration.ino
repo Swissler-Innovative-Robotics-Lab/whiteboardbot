@@ -5,6 +5,7 @@
 *///////////////////////////////////////////////////////////////
 // Include Libraries
 #include "def_includes.h"
+#include "mesh.h"
 //#include <Adafruit_NeoPixel.h>
 
 
@@ -38,6 +39,8 @@ void loop()
     //serverHandler();
     inputs(&controller, &lipo_monitor, &imu, &color_sensor, &compass);
     controller.runLogic();
-    outputs(&controller, &rgb_led);
+    //outputs(&controller, &rgb_led);
     //commHandlerOut();
+
+    sendBroadcast("LIGHT UP");
 }
