@@ -8,6 +8,12 @@
  Limitations: Assumes 8 bits per byte
 */////////////////////////////////////////////////////
 // Boilerplate ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#include "HttpsOTAUpdate.h"
+#include <Preferences.h>
+#include <WiFi.h>
+#include <esp_wifi.h>
+#include <esp_now.h>
+
 #ifndef _SIMPLE_HELPER_FUNCTIONS_h
 #define _SIMPLE_HELPER_FUNCTIONS_h
 
@@ -128,3 +134,43 @@ bool color_count(uint8_t measured_color, uint8_t &color_for_logic, uint32_t &cou
 // Boilerplate ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #endif
 
+
+//networking helpers
+
+
+//used for OTA Updates, can use LAN router or PC hotspot
+#define Wifi_SSID "DESKTOP-GLO6DFB 4172"
+#define Wifi_PASSWORD "password"
+
+//use by commenting out currnent device address (one being uploaded too
+// and having 2 remaining addresses as Address and address2
+uint8_t broadcastAddress0[] = {0xf4,0x12,0xfa,0x97,0xe0,0x68};//black 
+uint8_t broadcastAddress[] = {0x70,0x04,0x1d,0xcd,0xda,0x68};//white 
+uint8_t broadcastAddress2[] = {0xf4,0x12,0xfa,0x97,0xdd,0xc0};//yellow
+
+//theoretically can be converted to this but had issues uppon testing
+uint8_t broadcastAddresses[][] = {broadcastAddress0,broadcastAddress, broadcastAddress2}
+//then u can do curr_address = smth and then when these addresses are used (sendbroadcast) you can loop and then have condition if it isnt curr mac send msg 
+
+void readMacAddress()
+
+typedef struct struct_message {
+   char a[32];
+
+} struct_message;
+
+typedef void (*FunctionPointer)();
+typedef void (*RCFunctionPointer)(uint8_t[6], String); 
+
+
+RCFunctionPointer rcPtr;
+Preferences preferences;
+unsigned int task = 0;
+
+//OTA update setup
+static const char *url = "http://10.203.172.183:8000/movement.ino.bin"; //state url of your firmware image
+static const char *server_certificate = "";
+static HttpsOTAStatus_t otastatus;
+
+bool task_ran = false;
+bool notRun = true;

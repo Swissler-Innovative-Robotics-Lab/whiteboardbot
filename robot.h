@@ -9,7 +9,6 @@
 #include "serial_helper_programs.h"
 #include "simple_helper_functions.h"
 #include <Arduino.h>
-
 // Define the class --------------
 /* For the most part, we're just going to use the robot class as a container for variables and for logic functions. 
 Everything like loading in measurements and handling outputs will be taken care of by other parts of the code */
@@ -80,7 +79,27 @@ public:
     // Networking stuff ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //uint8_t network_data_out[128] = 0;
    //uint8_t network_data_in[128] = 0;
+   //replace with WiFi/Hotspot credentials
+    #define Wifi_SSID "DESKTOP-GLO6DFB 4172"
+    #define Wifi_PASSWORD "password"
     
+    struct_message myData;
+
+    esp_now_peer_info_t peerInfo;
+    esp_now_peer_info_t peerInfo2;
+
+    void addDeviceToMesh(uint8_t[6] mac);
+    void _h(HttpEvent_t *event);//empty method for handling httpevents if needed for debug purposes
+    void triggerUpdate();
+    
+    void sendBroadcast(String msg);
+    void sendSingle(uint8_t mac[6], String msg);
+
+    void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status);
+    void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len);
+    
+    void meshSetup(RCFunctionPointer rcPtrFunc);
+    void otaStuff();
     /////////////////////////////////////////////////////////////////////////
     // Methods
     void setInputTime(uint32_t time);
